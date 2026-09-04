@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hella HM Sub-1:50h Tracker</title>
     
-    <!-- Mobile App Meta Tags -->
+    <!-- PWA & Mobile App Meta Tags -->
     <meta name="theme-color" content="#090d16">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,278 +17,25 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%23090d16'/%3E%3Ccircle cx='256' cy='256' r='200' fill='%23deff9a'/%3E%3Cpath d='M256 120a32 32 0 1 0 0-64 32 32 0 0 0 0 64zm40 64h-30l-40 85-35-30v-40h-30v60l45 40-20 120h35l15-90 40 40v90h30v-105l-40-40 15-60 40 25v-95h-25z' fill='%23090d16'/%3E%3C/svg%3E">
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%23090d16'/%3E%3Ccircle cx='256' cy='256' r='200' fill='%23deff9a'/%3E%3Cpath d='M256 120a32 32 0 1 0 0-64 32 32 0 0 0 0 64zm40 64h-30l-40 85-35-30v-40h-30v60l45 40-20 120h35l15-90 40 40v90h30v-105l-40-40 15-60 40 25v-95h-25z' fill='%23090d16'/%3E%3C/svg%3E">
 
-    <!-- UI Bibliotheken & Fonts -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #090d16; 
-            color: #f1f5f9; 
-            -webkit-tap-highlight-color: transparent;
-        }
-        .accent-lime { color: #deff9a; }
-        .bg-accent-lime { background-color: #deff9a; }
-        .card-dark { background: #111726; border: 1px solid #1e293b; transition: all 0.2s ease; }
-        .card-completed {
-            background: rgba(16, 185, 129, 0.08) !important;
-            border-color: rgba(16, 185, 129, 0.5) !important;
-        }
-        .checkbox-custom {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            border: 2px solid #475569;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-        .checkbox-checked {
-            background-color: #10b981;
-            border-color: #10b981;
-            color: #090d16;
-        }
-        .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 24px); }
-        .scrollbar-none::-webkit-scrollbar { display: none; }
-        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
-</head>
-<body class="min-h-screen safe-bottom select-none">
-
-    <!-- Sticky Header -->
-    <header class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40 px-4 py-3">
-        <div class="max-w-4xl mx-auto flex flex-col gap-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-accent-lime flex items-center justify-center text-slate-950 font-black text-lg shadow-lg shadow-accent-lime/10">
-                        <i class="fa-solid fa-person-running"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-base font-bold text-white tracking-tight leading-tight">HM Sub-1:50h Tracker</h1>
-                        <p class="text-[11px] text-slate-400">Start: 07. Sept • Hella HM: 25. Okt 2026</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <button onclick="openResetModal()" class="text-xs px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-rose-400 transition-colors" title="Fortschritt zurücksetzen">
-                        <i class="fa-solid fa-rotate-right mr-1"></i> Reset
-                    </button>
-                    <a href="#workout-guide" class="text-xs px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-colors">
-                        <i class="fa-solid fa-dumbbell text-accent-lime mr-1"></i> Übungen
-                    </a>
-                    <div class="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold flex items-center gap-1.5">
-                        <i class="fa-solid fa-fire"></i>
-                        <span id="overallBadge">0 / 49</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fortschrittsbalken -->
-            <div>
-                <div class="flex justify-between items-center text-[11px] mb-1 font-medium">
-                    <span class="text-slate-400">Gesamtfortschritt (7 Wochen)</span>
-                    <span class="text-emerald-400 font-bold" id="progressPercent">0%</span>
-                </div>
-                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div id="progressBar" class="bg-gradient-to-r from-emerald-500 via-teal-400 to-accent-lime h-full rounded-full transition-all duration-500" style="width: 0%"></div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-4xl mx-auto px-4 mt-5">
-
-        <!-- Ziel-Paces Übersicht (Fest integriert) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
-            <div class="card-dark p-3 rounded-xl border-slate-800">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Grundlage (Z2)</span>
-                <strong class="text-sm font-bold text-white block mt-0.5">5:55 – 6:30</strong>
-                <span class="text-[10px] text-slate-400">Ruhiges Sprechtempo</span>
-            </div>
-            <div class="card-dark p-3 rounded-xl border-slate-800">
-                <span class="text-[10px] font-bold text-sky-400 uppercase tracking-wider block">Social Races</span>
-                <strong class="text-sm font-bold text-white block mt-0.5">5:40 – 6:10</strong>
-                <span class="text-[10px] text-sky-400">Airport & Köhlbrand</span>
-            </div>
-            <div class="card-dark p-3 rounded-xl border-slate-800">
-                <span class="text-[10px] font-bold text-accent-lime uppercase tracking-wider block">HM-Ziel (&lt;1:50h)</span>
-                <strong class="text-sm font-bold text-accent-lime block mt-0.5">5:10 – 5:14</strong>
-                <span class="text-[10px] text-slate-400">Wettkampftempo</span>
-            </div>
-            <div class="card-dark p-3 rounded-xl border-slate-800">
-                <span class="text-[10px] font-bold text-rose-400 uppercase tracking-wider block">Intervalle</span>
-                <strong class="text-sm font-bold text-white block mt-0.5">4:30 – 4:35</strong>
-                <span class="text-[10px] text-rose-400">VO2max / Schärfung</span>
-            </div>
-        </div>
-
-        <!-- Social Events Highlight Box -->
-        <div class="grid grid-cols-2 gap-3 mb-5">
-            <div class="card-dark p-3 rounded-xl border border-sky-500/30 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
-                    <i class="fa-solid fa-plane text-xs"></i>
-                </div>
-                <div class="overflow-hidden">
-                    <div class="text-[10px] text-sky-400 font-bold uppercase truncate">13. Sep • 16,1 km</div>
-                    <div class="text-xs font-bold text-white truncate">Airport Run</div>
-                </div>
-            </div>
-            <div class="card-dark p-3 rounded-xl border border-sky-500/30 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
-                    <i class="fa-solid fa-bridge text-xs"></i>
-                </div>
-                <div class="overflow-hidden">
-                    <div class="text-[10px] text-sky-400 font-bold uppercase truncate">03. Okt • 12 km</div>
-                    <div class="text-xs font-bold text-white truncate">Köhlbrandbrücke</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Wochen-Navigation -->
-        <div class="flex items-center gap-2 mb-4">
-            <button onclick="prevWeek()" id="btnNavPrev" class="w-9 h-9 shrink-0 rounded-xl card-dark flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition-all" title="Vorherige Woche">
-                <i class="fa-solid fa-chevron-left text-xs"></i>
-            </button>
-            
-            <div class="flex-1 flex items-center gap-2 overflow-x-auto py-1 scrollbar-none" id="weekNav"></div>
-            
-            <button onclick="nextWeek()" id="btnNavNext" class="w-9 h-9 shrink-0 rounded-xl card-dark flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition-all" title="Nächste Woche">
-                <i class="fa-solid fa-chevron-right text-xs"></i>
-            </button>
-        </div>
-
-        <!-- Aktive Wocheninhalte -->
-        <div id="weekDetailsContainer"></div>
-
-        <!-- Stabi- & Krafttrainings-Guide (Fest auf der Seite integriert) -->
-        <section id="workout-guide" class="mt-10 pt-6 border-t border-slate-800">
-            <h3 class="text-base font-bold text-white mb-3 flex items-center gap-2">
-                <i class="fa-solid fa-dumbbell text-accent-lime"></i> Dein Workout-Spickzettel (15–20 Min.)
-            </h3>
-
-            <div class="grid sm:grid-cols-2 gap-3.5 text-xs">
-                <div class="card-dark p-4 rounded-xl border-slate-800">
-                    <span class="text-accent-lime font-bold uppercase tracking-wider block mb-2">Routine A: Stabi & Fußsteifigkeit</span>
-                    <ul class="space-y-2 text-slate-300">
-                        <li><strong class="text-white">1. Sprungseil:</strong> 3x 45s (federnd aus Fußgelenken, 15s Pause)</li>
-                        <li><strong class="text-white">2. Monster Band Walks:</strong> 3x 15 Schritte seitlich (Mini-Band an Knöcheln)</li>
-                        <li><strong class="text-white">3. Einbeiniges Wadenheben:</strong> 3x 12 Wdh/Bein (mit 5kg Hantel auf Stufe)</li>
-                        <li><strong class="text-white">4. Plank Shoulder-Taps:</strong> 3x 45s (Rumpf stabil gegen Rotation)</li>
-                    </ul>
-                </div>
-
-                <div class="card-dark p-4 rounded-xl border-slate-800">
-                    <span class="text-cyan-400 font-bold uppercase tracking-wider block mb-2">Routine B: Kraft & Vortrieb</span>
-                    <ul class="space-y-2 text-slate-300">
-                        <li><strong class="text-white">1. Kettlebell Swings:</strong> 3x 15 Wdh (11kg / ab W3 14kg, explosiver Hüftstoß)</li>
-                        <li><strong class="text-white">2. Reverse Lunges:</strong> 3x 10 Wdh/Bein (mit 2x 5kg Hanteln rückwärts)</li>
-                        <li><strong class="text-white">3. Glute Bridges:</strong> 3x 15 Wdh (Band über Knien, oben 2s Po anspannen)</li>
-                        <li><strong class="text-white">4. Side Plank mit Heben:</strong> 3x 35s pro Seite (stärkt Gluteus Medius)</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Reset Modal -->
-    <div id="resetModal" style="display: none;" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-5 text-center">
-            <div class="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto mb-3 text-lg">
-                <i class="fa-solid fa-rotate-right"></i>
-            </div>
-            <h3 class="text-base font-bold text-white mb-1">Fortschritt zurücksetzen?</h3>
-            <p class="text-xs text-slate-400 mb-5 leading-relaxed">Möchtest du wirklich alle abgehakten Einheiten zurücksetzen?</p>
-            <div class="flex items-center gap-3">
-                <button onclick="closeResetModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-semibold text-xs hover:text-white transition-colors">
-                    Abbrechen
-                </button>
-                <button onclick="executeReset()" class="flex-1 py-2.5 rounded-xl bg-rose-500 text-white font-bold text-xs hover:bg-rose-600 transition-colors">
-                    Zurücksetzen
-                </button>
-            </div>
-        </div>
-    </div>
-
+    <!-- PWA Web Manifest (Inline) -->
     <script>
-        // Alte Service Worker / Caches restlos bereinigen
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(registrations => {
-                for (const reg of registrations) reg.unregister();
-            });
-        }
-        if ('caches' in window) {
-            caches.keys().then(keys => {
-                for (const k of keys) caches.delete(k);
-            });
-        }
-
-        // Plandaten (7 Wochen: 07. Sep - 25. Okt 2026)
-        const plan = [
-            {
-                weekNum: 1,
-                dateStr: "07. Sep – 13. Sep 2026",
-                title: "Woche 1: Einstieg & Airport Run",
-                km: "ca. 38 km",
-                days: [
-                    { id: "w1_d1", day: "Montag", type: "rest", title: "Ruhetag", desc: "Regeneration", detail: "Viel trinken, mental auf den Trainingsstart einstellen." },
-                    { id: "w1_d2", day: "Dienstag", type: "run-hard", title: "Intervalle (6x 1.000m)", desc: "ca. 9.5 km", detail: "2 km Einlaufen @6:20 | 6x 1.000m @4:35 min/km (2 Min Trabpause @6:40) | 1.5 km Auslaufen." },
-                    { id: "w1_d3", day: "Mittwoch", type: "stabi", title: "Stabi Routine A", desc: "15–20 Min", detail: "Sprungseil (3x45s), Monster Walks (3x15), Wadenheben (3x12 mit 5kg Hantel), Plank Shoulder-Taps (3x45s)." },
-                    { id: "w1_d4", day: "Donnerstag", type: "run-easy", title: "Lockerer Dauerlauf", desc: "7 km @6:05–6:20", detail: "Ganz entspannt im Wohlfühltempo, Kraft für Sonntag sparen." },
-                    { id: "w1_d5", day: "Freitag", type: "stabi", title: "Stabi Routine B (Leicht)", desc: "15 Min", detail: "KB Swings (3x12 mit 11kg), Lunges (3x8 mit 2x 5kg), Glute Bridges, Side Plank." },
-                    { id: "w1_d6", day: "Samstag", type: "rest", title: "Ruhetag vor Event", desc: "Beine hochlegen", detail: "Kein Lauf. Gut hydrieren und ausreichend Kohlenhydrate essen." },
-                    { id: "w1_d7", day: "Sonntag", type: "event", title: "Hamburg Airport Run (10 Meilen / 16,1 km)", desc: "Social Race mit Freunden | Pace: 5:40–6:10", detail: "Perfekter Ersatz für den 1. langen Grundlagenlauf! Gemeinsam mit Freunden rollen lassen und Kilometer sammeln." }
+        try {
+            const manifestJson = {
+                "name": "Hella HM Sub-1:50h Tracker",
+                "short_name": "HM 1:50h",
+                "start_url": "./index.html",
+                "display": "standalone",
+                "background_color": "#090d16",
+                "theme_color": "#090d16",
+                "orientation": "portrait",
+                "icons": [
+                    {
+                        "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%23090d16'/%3E%3Ccircle cx='256' cy='256' r='200' fill='%23deff9a'/%3E%3Cpath d='M256 120a32 32 0 1 0 0-64 32 32 0 0 0 0 64zm40 64h-30l-40 85-35-30v-40h-30v60l45 40-20 120h35l15-90 40 40v90h30v-105l-40-40 15-60 40 25v-95h-25z' fill='%23090d16'/%3E%3C/svg%3E",
+                        "sizes": "512x512",
+                        "type": "image/svg+xml",
+                        "purpose": "any maskable"
+                    }
                 ]
-            },
-            {
-                weekNum: 2,
-                dateStr: "14. Sep – 20. Sep 2026",
-                title: "Woche 2: Tempohärte & Schwellen-Einführung",
-                km: "ca. 42 km",
-                days: [
-                    { id: "w2_d1", day: "Montag", type: "rest", title: "Ruhetag", desc: "Erholung nach Airport Run", detail: "Muskeln lockern, sanftes Dehnen der Waden und Oberschenkel." },
-                    { id: "w2_d2", day: "Dienstag", type: "run-hard", title: "800m Tempo-Intervalle", desc: "ca. 10 km", detail: "2 km Einlaufen | 8x 800m @4:30 min/km (90 Sek Trabpause) | 1.6 km Auslaufen." },
-                    { id: "w2_d3", day: "Mittwoch", type: "stabi", title: "Stabi Routine A", desc: "15–20 Min", detail: "Volles Programm Routine A. Fokus auf Stabilität im Sprunggelenk." },
-                    { id: "w2_d4", day: "Donnerstag", type: "run-hard", title: "Tempowechsellauf", desc: "10 km", detail: "2 km Einlaufen | 4 km Schwellentempo (5:10–5:15 min/km) | 4 km Locker (6:10 min/km)." },
-                    { id: "w2_d5", day: "Freitag", type: "stabi", title: "Stabi Routine B", desc: "15–20 Min", detail: "KB Swings auf 14kg steigern! Lunges mit 2x 5kg Hanteln." },
-                    { id: "w2_d6", day: "Samstag", type: "run-easy", title: "Regenerationstrab", desc: "5 km @6:30", detail: "Sehr locker rollen lassen." },
-                    { id: "w2_d7", day: "Sonntag", type: "run-long", title: "Langer Lauf (18 km)", desc: "18 km @6:25–6:35", detail: "Konstant aerobes Tempo. Die letzten 2 km locker bei 6:10 auslaufen lassen." }
-                ]
-            },
-            {
-                weekNum: 3,
-                dateStr: "21. Sep – 27. Sep 2026",
-                title: "Woche 3: Schwellen-Belastungsspitze",
-                km: "ca. 46 km",
-                days: [
-                    { id: "w3_d1", day: "Montag", type: "rest", title: "Ruhetag", desc: "Regeneration", detail: "Schlaf nachholen und Beine hochlegen." },
-                    { id: "w3_d2", day: "Dienstag", type: "run-hard", title: "1.200m Schwellenintervalle", desc: "ca. 10.5 km", detail: "2 km Einlaufen | 5x 1.200m @4:35 min/km (3 Min Trabpause) | 1.5 km Auslaufen." },
-                    { id: "w3_d3", day: "Mittwoch", type: "stabi", title: "Stabi Routine A", desc: "20 Min", detail: "Sprungseil, Monster Walks, Wadenheben und Planks." },
-                    { id: "w3_d4", day: "Donnerstag", type: "run-easy", title: "Dauerlauf Grundlage", desc: "11 km @6:05–6:15", detail: "Gleichmäßiger Rhythmus, bewusst ökonomisch laufen." },
-                    { id: "w3_d5", day: "Freitag", type: "stabi", title: "Stabi Routine B", desc: "20 Min", detail: "KB Swings (3x15 @14kg), Lunges, Glute Bridges mit Band." },
-                    { id: "w3_d6", day: "Samstag", type: "run-easy", title: "Regenerationstrab", desc: "5 km @6:30", detail: "Reines Durchbluten der Beine." },
-                    { id: "w3_d7", day: "Sonntag", type: "run-long", title: "Langer Lauf + Endbeschleunigung", desc: "20 km gesamt", detail: "17 km @6:25–6:35 | Letzte 3 km im HM-Zieltempo (5:10–5:15 min/km) anziehen!" }
-                ]
-            },
-            {
-                weekNum: 4,
-                dateStr: "28. Sep – 04. Okt 2026",
-                title: "Woche 4: Köhlbrandbrückenlauf & Deload",
-                km: "ca. 30 km",
-                days: [
-                    { id: "w4_d1", day: "Montag", type: "rest", title: "Ruhetag", desc: "Vollständige Erholung", detail: "Anpassung der Spitzenwoche 3 verarbeiten." },
-                    { id: "w4_d2", day: "Dienstag", type: "run-hard", title: "Kurze Temporeize (4x 600m)", desc: "ca. 6.5 km", detail: "2 km Einlaufen | 4x 600m @4:30 min/km (2 Min Trab) | 1.5 km Auslaufen. Spritzig bleiben." },
-                    { id: "w4_d3", day: "Mittwoch", type: "stabi", title: "Stabi Routine A (Light)", desc: "10–12 Min", detail: "Nur 2 leichte Sätze pro Übung. Kein Muskelkater vor dem Brückenlauf!" },
-                    { id: "w4_d4", day: "Donnerstag", type: "run-easy", title: "Lockerer Shakeout", desc: "6 km @6:20", detail: "Ruhig traben, Beine locker halten." },
-                    { id: "w4_d5", day: "Freitag", type: "rest", title: "Ruhetag & Mobility", desc: "15 Min Dehnen", detail: "Sanftes Dehnen der Waden und Sehnen                 ]
             };
             const manifestBlob = new Blob([JSON.stringify(manifestJson)], {type: 'application/json'});
             const manifestURL = URL.createObjectURL(manifestBlob);
@@ -296,11 +44,11 @@
             linkTag.href = manifestURL;
             document.head.appendChild(linkTag);
         } catch (e) {
-            console.warn('Manifest nicht geladen', e);
+            console.warn('Manifest-Initialisierung übersprungen', e);
         }
     </script>
 
-    <!-- UI Bibliotheken & Fonts -->
+    <!-- UI Libraries & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -346,8 +94,8 @@
 </head>
 <body class="min-h-screen safe-bottom select-none">
 
-    <!-- PWA Installations-Banner -->
-    <div id="installBanner" class="hidden bg-gradient-to-r from-emerald-600 to-teal-700 px-4 py-2.5 text-white shadow-xl flex items-center justify-between z-50">
+    <!-- App Installation Banner (PWA) -->
+    <div id="installBanner" style="display: none;" class="bg-gradient-to-r from-emerald-600 to-teal-700 px-4 py-2.5 text-white shadow-xl items-center justify-between z-50">
         <div class="flex items-center gap-2.5">
             <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
             <span class="text-xs font-semibold">Als App auf Startbildschirm installieren?</span>
@@ -362,7 +110,7 @@
         </div>
     </div>
 
-    <!-- Sticky Header -->
+    <!-- Sticky Header mit Fortschrittsbalken -->
     <header class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40 px-4 py-3">
         <div class="max-w-4xl mx-auto flex flex-col gap-3">
             <div class="flex items-center justify-between">
@@ -427,7 +175,7 @@
             </div>
         </div>
 
-        <!-- Wochen-Navigation -->
+        <!-- Wochen-Navigation mit expliziten Pfeilen links und rechts -->
         <div class="flex items-center gap-2 mb-4">
             <button onclick="prevWeek()" id="btnNavPrev" class="w-9 h-9 shrink-0 rounded-xl card-dark flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition-all" title="Vorherige Woche">
                 <i class="fa-solid fa-chevron-left text-xs"></i>
@@ -440,13 +188,13 @@
             </button>
         </div>
 
-        <!-- Aktive Wocheninhalte -->
+        <!-- Aktive Wocheninhalte (unterstützt Wischgesten) -->
         <div id="weekDetailsContainer"></div>
 
     </main>
 
-    <!-- Modal für Paces & Routinen -->
-    <div id="infoModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-4">
+    <!-- Modal für Paces & Workout-Spickzettel -->
+    <div id="infoModal" style="display: none;" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-end sm:items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl max-h-[85vh] overflow-y-auto p-5 text-slate-300">
             <div class="flex justify-between items-center pb-3 border-b border-slate-800">
                 <h3 class="text-base font-bold text-white flex items-center gap-2">
@@ -457,6 +205,7 @@
                 </button>
             </div>
 
+            <!-- Ziel-Paces -->
             <div class="mt-4">
                 <h4 class="text-xs font-bold text-accent-lime uppercase mb-2">Ziel-Pacing</h4>
                 <div class="grid grid-cols-2 gap-2 text-xs">
@@ -479,6 +228,7 @@
                 </div>
             </div>
 
+            <!-- Routinen -->
             <div class="mt-5 space-y-4 text-xs">
                 <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
                     <strong class="text-accent-lime block mb-1">Routine A: Stabi & Fußsteifigkeit (15 Min)</strong>
@@ -502,14 +252,14 @@
         </div>
     </div>
 
-    <!-- Reset Modal -->
-    <div id="resetModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <!-- Custom Modal für Reset-Bestätigung -->
+    <div id="resetModal" style="display: none;" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-5 text-center">
             <div class="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto mb-3 text-lg">
                 <i class="fa-solid fa-rotate-right"></i>
             </div>
             <h3 class="text-base font-bold text-white mb-1">Fortschritt zurücksetzen?</h3>
-            <p class="text-xs text-slate-400 mb-5 leading-relaxed">Möchtest du wirklich alle abgehakten Einheiten zurücksetzen?</p>
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed">Möchtest du wirklich alle abgehakten Trainingseinheiten wieder auf den Anfangszustand setzen?</p>
             <div class="flex items-center gap-3">
                 <button onclick="closeResetModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-semibold text-xs hover:text-white transition-colors">
                     Abbrechen
@@ -528,7 +278,7 @@
             e.preventDefault();
             deferredPrompt = e;
             const banner = document.getElementById('installBanner');
-            if (banner) banner.classList.remove('hidden');
+            if (banner) banner.style.display = 'flex';
         });
 
         const btnInstall = document.getElementById('btnInstall');
@@ -538,15 +288,15 @@
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 deferredPrompt = null;
-                document.getElementById('installBanner').classList.add('hidden');
+                document.getElementById('installBanner').style.display = 'none';
             });
         }
 
         function dismissInstall() {
-            document.getElementById('installBanner').classList.add('hidden');
+            document.getElementById('installBanner').style.display = 'none';
         }
 
-        // Plandaten (7 Wochen: 07. Sep - 25. Okt 2026)
+        // Trainingsplandaten (7 Wochen, 07. Sep - 25. Okt 2026)
         const plan = [
             {
                 weekNum: 1,
@@ -575,9 +325,4 @@
                     { id: "w2_d4", day: "Donnerstag", type: "run-hard", title: "Tempowechsellauf", desc: "10 km", detail: "2 km Einlaufen | 4 km Schwellentempo (5:10–5:15 min/km) | 4 km Locker (6:10 min/km)." },
                     { id: "w2_d5", day: "Freitag", type: "stabi", title: "Stabi Routine B", desc: "15–20 Min", detail: "KB Swings auf 14kg steigern! Lunges mit 2x 5kg Hanteln." },
                     { id: "w2_d6", day: "Samstag", type: "run-easy", title: "Regenerationstrab", desc: "5 km @6:30", detail: "Sehr locker rollen lassen." },
-                    { id: "w2_d7", day: "Sonntag", type: "run-long", title: "Langer Lauf (18 km)", desc: "18 km @6:25–6:35", detail: "Konstant aerobes Tempo. Die letzten 2 km locker bei 6:10 auslaufen lassen." }
-                ]
-            },
-            {
-                weekNum: 3,
-                dateStr: "21. Sep – 2
+                    { id: "w2_d7", day: "Sonn
